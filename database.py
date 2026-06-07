@@ -2,7 +2,9 @@ import sqlite3
 import json
 import os
 
-DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'service.db')
+# Use /app/data/ for HuggingFace Spaces (Docker), local dir otherwise
+_data_dir = '/app/data' if os.path.isdir('/app/data') else os.path.dirname(__file__)
+DATABASE_PATH = os.path.join(_data_dir, 'service.db')
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE_PATH)
