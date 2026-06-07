@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Vehicle Diagnostic & Service Scheduler</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <i data-lucide="cpu" class="logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Auto<span>Diagnose</span></h1>
+                    <p>Smart Vehicle Diagnostic & Service Scheduler</p>
+                </div>
+            </div>
+            <div class="search-bar">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="trackPlateInput" placeholder="Cari No. Plat Kendaraan... (misal: B 1234 ABC)" autocomplete="off">
+                <button type="button" id="btnTrack" class="btn-primary">Track</button>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="grid-layout">
+            <!-- LEFT COLUMN: INPUT FORM -->
+            <section class="card form-section">
+                <div class="card-header">
+                    <i data-lucide="settings" class="card-title-icon"></i>
+                    <h2>Detail & Parameter Kendaraan</h2>
+                </div>
+                
+                <form id="calcForm" autocomplete="off">
+                    <!-- VEHICLE TYPE CARDS -->
+                    <div class="form-group">
+                        <label>Jenis Kendaraan</label>
+                        <div class="vehicle-selector">
+                            <label class="vehicle-card active">
+                                <input type="radio" name="vehicle_type" value="motor" checked>
+                                <div class="vehicle-card-content">
+                                    <i data-lucide="bike" class="veh-icon"></i>
+                                    <span>Motor</span>
+                                </div>
+                            </label>
+                            <label class="vehicle-card">
+                                <input type="radio" name="vehicle_type" value="mobil">
+                                <div class="vehicle-card-content">
+                                    <i data-lucide="car" class="veh-icon"></i>
+                                    <span>Mobil</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- OWNER & PLATE -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="plateNumber">Nomor Plat Kendaraan</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="credit-card" class="input-icon"></i>
+                                <input type="text" id="plateNumber" placeholder="B 1234 ABC" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ownerName">Nama Pemilik</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="user" class="input-icon"></i>
+                                <input type="text" id="ownerName" placeholder="Nama Pemilik" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PARAMETERS -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="lastServiceDate">Tanggal Servis Terakhir</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="calendar" class="input-icon"></i>
+                                <input type="date" id="lastServiceDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="currentOdometer">Odometer Saat Ini (km)</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="gauge" class="input-icon"></i>
+                                <input type="number" id="currentOdometer" min="0" placeholder="Contoh: 15000" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dailyDistance">Rata-rata Jarak Tempuh Harian (km)</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="navigation" class="input-icon"></i>
+                            <input type="number" id="dailyDistance" min="0" placeholder="Contoh: 20" required>
+                        </div>
+                    </div>
+
+                    <!-- COMPLAINTS -->
+                    <div class="form-group">
+                        <label for="complaints">Keluhan Kendaraan (Teks Bebas)</label>
+                        <textarea id="complaints" placeholder="Tulis keluhan kendaraan di sini... (misal: rem kurang pakem dan bunyi mendecit, oli menetes di lantai, mesin cepat panas)"></textarea>
+                    </div>
+
+                    <!-- QUICK SUGGESTIONS -->
+                    <div class="form-group">
+                        <label class="sub-label">Saran Gejala Cepat</label>
+                        <div class="chips-container" id="symptomChips">
+                            <span class="chip" data-text="rem bunyi berdecit dan kurang pakem">Rem Bunyi & Selip</span>
+                            <span class="chip" data-text="mesin cepat panas dan air radiator cepat habis">Mesin Overheat</span>
+                            <span class="chip" data-text="keluar asap putih dari knalpot">Asap Knalpot</span>
+                            <span class="chip" data-text="aki tekor dan susah starter">Aki Lemah/Tekor</span>
+                            <span class="chip" data-text="shockbreaker keras dan suspensi jedug">Suspensi Keras</span>
+                            <span class="chip" data-text="ada tetesan oli di kolong mesin">Oli Bocor</span>
+                            <span class="chip" data-text="kopling selip dan gigi susah dipindahkan">Transmisi Selip</span>
+                            <span class="chip" data-text="setir terasa bergetar dan oleng">Setir Getar</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnCalculate" class="btn-primary btn-block">
+                        <i data-lucide="wrench"></i> Hitung Jadwal & Diagnosis
+                    </button>
+                </form>
+            </section>
+
+            <!-- RIGHT COLUMN: RESULTS PANEL -->
+            <div class="results-column">
+                <!-- OUTPUT DISPLAY (HIDDEN BY DEFAULT UNTIL CALCULATED) -->
+                <div id="resultsPlaceholder" class="card placeholder-card">
+                    <i data-lucide="activity" class="placeholder-icon animate-pulse"></i>
+                    <h3>Siap Menganalisis</h3>
+                    <p>Masukkan parameter kendaraan dan tekan tombol <strong>Hitung Jadwal & Diagnosis</strong> untuk melihat hasil analisis cerdas.</p>
+                </div>
+
+                <div id="resultsContent" class="results-content-wrap hidden">
+                    <!-- SECTION 1: SCHEDULE METERS -->
+                    <section class="card results-card">
+                        <div class="card-header">
+                            <i data-lucide="calendar-check" class="card-title-icon text-indigo"></i>
+                            <h2>Hasil Prediksi Jadwal Servis</h2>
+                        </div>
+                        
+                        <div class="schedule-grid">
+                            <!-- OIL METER -->
+                            <div class="meter-box">
+                                <h3>Sisa Umur Oli</h3>
+                                <div class="progress-radial-wrapper">
+                                    <svg class="radial-progress-bar" width="140" height="140" viewBox="0 0 140 140">
+                                        <circle class="radial-bg" cx="70" cy="70" r="55"></circle>
+                                        <circle class="radial-progress" id="oilProgressCircle" cx="70" cy="70" r="55" stroke-dasharray="345.5" stroke-dashoffset="345.5"></circle>
+                                    </svg>
+                                    <div class="radial-value" id="oilLifePct">100%</div>
+                                </div>
+                                <div class="meter-info">
+                                    <div class="info-row">
+                                        <span class="lbl">Sisa Kilometer:</span>
+                                        <span class="val" id="oilRemOdo">3.000 km</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="lbl">Sisa Hari:</span>
+                                        <span class="val" id="oilRemDays">90 hari</span>
+                                    </div>
+                                    <div class="info-row highlight">
+                                        <span class="lbl">Target Servis:</span>
+                                        <span class="val" id="oilTargetDate">2026-09-07</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SERVICE METER -->
+                            <div class="meter-box">
+                                <h3>Servis Rutin Berikutnya</h3>
+                                <div class="progress-radial-wrapper">
+                                    <svg class="radial-progress-bar" width="140" height="140" viewBox="0 0 140 140">
+                                        <circle class="radial-bg" cx="70" cy="70" r="55"></circle>
+                                        <circle class="radial-progress" id="serviceProgressCircle" cx="70" cy="70" r="55" stroke-dasharray="345.5" stroke-dashoffset="345.5"></circle>
+                                    </svg>
+                                    <div class="radial-value" id="serviceLifePct">100%</div>
+                                </div>
+                                <div class="meter-info">
+                                    <div class="info-row">
+                                        <span class="lbl">Sisa Kilometer:</span>
+                                        <span class="val" id="serviceRemOdo">6.000 km</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="lbl">Sisa Hari:</span>
+                                        <span class="val" id="serviceRemDays">180 hari</span>
+                                    </div>
+                                    <div class="info-row highlight">
+                                        <span class="lbl">Target Servis:</span>
+                                        <span class="val" id="serviceTargetDate">2026-12-07</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 2: DIAGNOSTIC REPORT -->
+                    <section class="card results-card">
+                        <div class="card-header justify-between">
+                            <div class="flex-align">
+                                <i data-lucide="shield-alert" class="card-title-icon" id="diagTitleIcon"></i>
+                                <h2>Laporan Diagnosis Keluhan</h2>
+                            </div>
+                            <span class="badge" id="overallStatusBadge">Aman</span>
+                        </div>
+
+                        <div class="diagnosis-wrapper">
+                            <div class="cost-summary">
+                                <span>Estimasi Total Perbaikan:</span>
+                                <strong id="totalRepairCost">Rp 0</strong>
+                            </div>
+
+                            <div class="fault-list" id="faultList">
+                                <!-- Dynamic faults will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <button type="button" id="btnSaveTicket" class="btn-success btn-block">
+                                <i data-lucide="save"></i> Simpan Laporan Ke Plat Nomor
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- SECTION 3: TRACKING & HISTORY -->
+                <section class="card track-section-card hidden" id="historySection">
+                    <div class="card-header">
+                        <i data-lucide="history" class="card-title-icon text-cyan"></i>
+                        <h2>Riwayat Servis Kendaraan</h2>
+                    </div>
+                    <div class="history-meta">
+                        <div class="meta-item"><span class="lbl">No. Plat:</span> <strong id="histPlate">B 1234 ABC</strong></div>
+                        <div class="meta-item"><span class="lbl">Tipe:</span> <strong id="histType">Motor</strong></div>
+                        <div class="meta-item"><span class="lbl">Pemilik:</span> <strong id="histOwner">Budi</strong></div>
+                    </div>
+                    <div class="timeline" id="historyTimeline">
+                        <!-- Dynamic timeline items -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Custom App Logic -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
