@@ -1,3 +1,13 @@
+---
+title: Service Dan Diagnosa Motor
+emoji: 🔧
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+license: mit
+---
+
 # 🔧 Service & Diagnosa Motor
 
 Aplikasi web untuk penjadwalan servis dan diagnosa kendaraan bermotor (motor & mobil).
@@ -9,42 +19,13 @@ Aplikasi web untuk penjadwalan servis dan diagnosa kendaraan bermotor (motor & m
 - 💾 **Simpan Riwayat** – Simpan tiket servis per plat nomor kendaraan
 - 📋 **Lacak Riwayat** – Lacak riwayat servis berdasarkan nomor plat
 
-## 🚀 Cara Menjalankan Lokal
-
-```bash
-# Clone repo
-git clone https://github.com/Kyp1277/service-and-diagnosa-motor.git
-cd service-and-diagnosa-motor
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Jalankan aplikasi
-python app.py
-```
-
-Buka browser ke `http://localhost:5000`
-
-## 🌐 Demo Online
-
-👉 [https://huggingface.co/spaces/kypli/service](https://huggingface.co/spaces/kypli/service)
-
 ## 🛠️ Teknologi
 
-- **Backend**: Python Flask
+- **Backend**: Python Flask + Gunicorn
 - **Database**: SQLite
 - **Frontend**: HTML, CSS, JavaScript (Vanilla)
+- **Deployment**: Docker (HuggingFace Spaces)
 
-## 📁 Struktur Proyek
+## 📁 Source Code
 
-```
-├── app.py                 # Main Flask application
-├── database.py            # Database operations (SQLite)
-├── diagnostic_engine.py   # Engine diagnosa keluhan kendaraan
-├── requirements.txt       # Python dependencies
-├── static/
-│   ├── css/style.css      # Styling
-│   └── js/app.js          # Frontend logic
-└── templates/
-    └── index.html         # Main HTML template
-```
+👉 [GitHub Repository](https://github.com/Kyp1277/service-and-diagnosa-motor)
