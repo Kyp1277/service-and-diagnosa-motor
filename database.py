@@ -2,8 +2,14 @@ import sqlite3
 import json
 import os
 
-# Use /app/data/ for HuggingFace Spaces (Docker), local dir otherwise
-_data_dir = '/app/data' if os.path.isdir('/app/data') else os.path.dirname(__file__)
+# Path priority: HuggingFace Docker (/app/data) > Vercel serverless (/tmp) > local
+if os.path.isdir('/app/data'):
+    _data_dir = '/app/data'
+elif os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
+    _data_dir = '/tmp'
+else:
+    _data_dir = os.path.dirname(__file__)
+
 DATABASE_PATH = os.path.join(_data_dir, 'service.db')
 
 def get_db_connection():
